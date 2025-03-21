@@ -46,17 +46,15 @@ label {
     font-weight: bold;
 }
 
+/* Consistent input styling */
 input, select {
     width: 100%;
     padding: 8px;
     border: 1px solid #ddd;
     border-radius: 4px;
-}
-
-/* Currency input styling */
-.currency-input {
-    text-align: right;
-    font-family: monospace;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    text-align: left;
 }
 
 button {

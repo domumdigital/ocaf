@@ -29,18 +29,32 @@ const annualRentPotential = document.getElementById('annual-rent-potential');
 // Initialize the application when the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', initialize);
 
-// Format currency with commas and two decimal places
+// Format number with commas (no dollar sign)
+function formatNumber(number) {
+    if (isNaN(number)) return '';
+    
+    // Ensure we have a proper number with 2 decimal places
+    return number.toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+}
+
+// Format currency with commas and dollar sign
 function formatCurrency(amount) {
+    if (isNaN(amount)) return '$0.00';
+    
     return '$' + amount.toLocaleString('en-US', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
     });
 }
 
-// Parse currency string to number
-function parseCurrency(currencyString) {
-    if (!currencyString) return 0;
-    return parseFloat(currencyString.replace(/[$,]/g, '')) || 0;
+// Parse formatted number string to number
+function parseFormattedNumber(formattedString) {
+    if (!formattedString || formattedString.trim() === '') return 0;
+    // Remove all commas and any non-numeric characters except decimal point
+    return parseFloat(formattedString.replace(/[^\d.-]/g, '')) || 0;
 }
 
 function initialize() {
@@ -61,34 +75,63 @@ function initialize() {
     const tbody = unitMatrix.querySelector('tbody');
     tbody.addEventListener('input', updateUnitMatrixCalculations);
     
-    // Set up currency input formatting
-    setupCurrencyInputs();
+    // Set up number formatting for inputs
+    setupNumberFormatting();
     
     // Initial calculation update
     updateUnitMatrixCalculations();
 }
 
-// Set up currency input formatting
-function setupCurrencyInputs() {
-    // Set up formatters for all currency inputs
-    const currencyInputs = document.querySelectorAll('.currency-input');
-    currencyInputs.forEach(input => {
-        // Format when input loses focus
-        input.addEventListener('blur', function() {
-            const value = parseCurrency(this.value);
-            if (!isNaN(value)) {
-                this.value = formatCurrency(value).replace('$', '');
-            }
-        });
-        
-        // Clear formatting when input gets focus
-        input.addEventListener('focus', function() {
-            const value = parseCurrency(this.value);
-            if (!isNaN(value)) {
-                this.value = value.toFixed(2);
-            }
-        });
+// Setup number formatting for all relevant inputs
+function setupNumberFormatting() {
+    // Set up the current debt service input
+    setupNumberInput(currentDebtService);
+    
+    // Set up all unit count inputs
+    const unitCounts = document.querySelectorAll('.unit-count');
+    unitCounts.forEach(input => {
+        setupNumberInput(input);
     });
+    
+    // Set up all unit rent inputs
+    const unitRents = document.querySelectorAll('.unit-rent');
+    unitRents.forEach(input => {
+        setupNumberInput(input);
+    });
+}
+
+// Set up formatting for a single number input
+function setupNumberInput(input) {
+    // When the input loses focus
+    input.addEventListener('blur', function() {
+        // Only format if there's a value
+        if (this.value && this.value.trim() !== '') {
+            const numValue = parseFormattedNumber(this.value);
+            if (!isNaN(numValue)) {
+                this.value = formatNumber(numValue);
+            }
+        }
+    });
+    
+    // When the input gets focus
+    input.addEventListener('focus', function() {
+        // Only convert if there's a value and it contains formatting
+        if (this.value && this.value.includes(',')) {
+            const numValue = parseFormattedNumber(this.value);
+            if (!isNaN(numValue)) {
+                // Just remove the commas but keep the decimal places
+                this.value = numValue.toString();
+            }
+        }
+    });
+    
+    // Fix for initial values (if any)
+    if (input.value && input.value.trim() !== '') {
+        const numValue = parseFormattedNumber(input.value);
+        if (!isNaN(numValue)) {
+            input.value = formatNumber(numValue);
+        }
+    }
 }
 
 // Load OCAF factors from JSON file
@@ -135,8 +178,8 @@ function addUnitMatrixRow() {
     
     newRow.innerHTML = `
         <td><input type="text" class="unit-type" placeholder="Custom Unit ${customRowCount}"></td>
-        <td><input type="number" class="unit-count" min="0"></td>
-        <td><input type="text" class="unit-rent currency-input" min="0" step="0.01"></td>
+        <td><input type="text" class="unit-count number-input" min="0"></td>
+        <td><input type="text" class="unit-rent number-input" min="0" step="0.01"></td>
         <td class="calculated-cell rent-potential">$0.00</td>
         <td><button class="remove-row-btn">Remove</button></td>
     `;
@@ -151,8 +194,9 @@ function addUnitMatrixRow() {
     // Add the new row to the table
     unitMatrix.querySelector('tbody').appendChild(newRow);
     
-    // Set up currency formatting for the new row
-    setupCurrencyInputs();
+    // Set up number formatting for the new inputs
+    setupNumberInput(newRow.querySelector('.unit-count'));
+    setupNumberInput(newRow.querySelector('.unit-rent'));
 }
 
 // Update calculations in the Unit Matrix
@@ -162,8 +206,12 @@ function updateUnitMatrixCalculations() {
     
     // Process each row
     rows.forEach(row => {
-        const unitCount = parseInt(row.querySelector('.unit-count').value) || 0;
-        const unitRent = parseCurrency(row.querySelector('.unit-rent').value) || 0;
+        // Parse values from inputs
+        const unitCountInput = row.querySelector('.unit-count');
+        const unitRentInput = row.querySelector('.unit-rent');
+        
+        const unitCount = parseFormattedNumber(unitCountInput.value) || 0;
+        const unitRent = parseFormattedNumber(unitRentInput.value) || 0;
         
         // Calculate rent potential (B x C)
         const rentPotential = unitCount * unitRent;
@@ -207,7 +255,7 @@ function performCalculation() {
     const ocafFactor = selectedStateData.factor;
     
     // Get current debt service
-    const debtService = parseCurrency(currentDebtService.value);
+    const debtService = parseFormattedNumber(currentDebtService.value);
     
     // Calculate adjusted amount
     const adjustedAmount = debtService * ocafFactor;
@@ -235,7 +283,7 @@ function validateInputs() {
     }
     
     // Check if current debt service is provided
-    if (!currentDebtService.value || isNaN(parseCurrency(currentDebtService.value))) {
+    if (!currentDebtService.value || parseFormattedNumber(currentDebtService.value) <= 0) {
         alert('Please enter a valid Current Debt Service amount.');
         currentDebtService.focus();
         return false;
@@ -246,7 +294,7 @@ function validateInputs() {
     let hasUnitData = false;
     
     for (let i = 0; i < unitCounts.length; i++) {
-        if (unitCounts[i].value && parseInt(unitCounts[i].value) > 0) {
+        if (unitCounts[i].value && parseFormattedNumber(unitCounts[i].value) > 0) {
             hasUnitData = true;
             break;
         }
@@ -275,8 +323,8 @@ function calculateUnitMatrixResults(ocafFactor) {
     rows.forEach(row => {
         // Get values from the row
         const unitType = row.querySelector('.unit-type').value || 'Unit';
-        const unitCount = parseInt(row.querySelector('.unit-count').value) || 0;
-        const unitRent = parseCurrency(row.querySelector('.unit-rent').value) || 0;
+        const unitCount = parseFormattedNumber(row.querySelector('.unit-count').value) || 0;
+        const unitRent = parseFormattedNumber(row.querySelector('.unit-rent').value) || 0;
         
         // Skip rows with no units
         if (unitCount === 0) {
@@ -296,7 +344,7 @@ function calculateUnitMatrixResults(ocafFactor) {
         const resultRow = document.createElement('tr');
         resultRow.innerHTML = `
             <td>${unitType}</td>
-            <td>${unitCount}</td>
+            <td>${Math.round(unitCount)}</td>
             <td>${formatCurrency(unitRent)}</td>
             <td>${formatCurrency(currentPotential)}</td>
             <td>${formatCurrency(adjustedRent)}</td>
