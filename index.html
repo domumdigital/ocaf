@@ -1,72 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <!-- 
-      This is an HTML comment
-      You can write text in a comment and the content won't be visible in the page
-    -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OCAF CALC</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header>
+        <h1>OCAF CALC</h1>
+        <p>Calculate OCAF adjustments for your property</p>
+    </header>
 
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" href="https://glitch.com/favicon.ico" />
-
-    <!--
-      This is the page head - it contains info the browser uses
-      Like the title, which appears on the browser tab but not inside the page
-      Further down you'll see the content that displays in the page
-    -->
-    <title>Hello World!</title>
-
-    <!-- The website stylesheet -->
-    <link rel="stylesheet" href="/style.css" />
-
-    <!-- The website JavaScript file -->
-    <script src="/script.js" defer></script>
-  </head>
-  <body>
-    <!--
-      The body includes the content you see in the page
-      Each element is defined using tags, like this <div></div>
-      The attributes like class="wrapper" let us style elements in the CSS
-    -->
-    <div class="wrapper">
-      <div class="content" role="main">
-        <h1 class="title">Hello World!</h1>
-        <img
-          src="https://cdn.glitch.com/a9975ea6-8949-4bab-addb-8a95021dc2da%2Fillustration.svg?v=1618177344016"
-          class="illustration"
-          alt="Editor illustration"
-          title="Click the image!"
-        />
-        <div class="instructions">
-          <h2>Using this project</h2>
-          <p>
-            This is the Glitch <strong>Hello Website</strong> project. You can
-            use it to build your own site. Check out the code in the editor and open
-            the <span class="fileopener" data-file="TODO.md" data-line="0"
-              >TODO</span> for next steps!
-          </p>
-          <!--  🚧 TODO: ADD BUTTON HERE -->
-
-          <!-- Once you've added the button from TODO.md, click it in the page -->
-          <!-- Check out the function in script.js to see how it works -->
-        </div>
-      </div>
-    </div>
-    <!-- The footer holds our remix button — you can keep or delete it ✂ -->
-    <footer class="footer">
-      <div class="links"></div>
-      <a
-        class="btn--remix"
-        target="_top"
-        href="https://glitch.com/edit/#!/remix/glitch-hello-website"
-      >
-        <img
-          src="https://cdn.glitch.com/605e2a51-d45f-4d87-a285-9410ad350515%2FLogo_Color.svg?v=1618199565140"
-          alt=""
-        />
-        Remix on Glitch
-      </a>
+    <main>
+        <section id="input-section">
+            <h2>Input Information</h2>
+            
+            <div class="form-group">
+                <label for="state-select">Select State:</label>
+                <select id="state-select">
+                    <option value="">-- Select a State --</option>
+                    <!-- States will be populated from JavaScript -->
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="current-debt-service">Current Debt Service ($):</label>
+                <input type="number" id="current-debt-service" min="0" step="0.01">
+            </div>
+            
+            <h3>Unit Matrix</h3>
+            <table id="unit-matrix">
+                <thead>
+                    <tr>
+                        <th>Unit Type</th>
+                        <th>Number of Units</th>
+                        <th>Square Footage</th>
+                        <th>Current Rent</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Studio</td>
+                        <td><input type="number" class="unit-count" min="0"></td>
+                        <td><input type="number" class="unit-sqft" min="0"></td>
+                        <td><input type="number" class="unit-rent" min="0" step="0.01"></td>
+                    </tr>
+                    <tr>
+                        <td>1 Bedroom</td>
+                        <td><input type="number" class="unit-count" min="0"></td>
+                        <td><input type="number" class="unit-sqft" min="0"></td>
+                        <td><input type="number" class="unit-rent" min="0" step="0.01"></td>
+                    </tr>
+                    <tr>
+                        <td>2 Bedroom</td>
+                        <td><input type="number" class="unit-count" min="0"></td>
+                        <td><input type="number" class="unit-sqft" min="0"></td>
+                        <td><input type="number" class="unit-rent" min="0" step="0.01"></td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <button id="add-row-btn">Add Another Unit Type</button>
+            
+            <div class="actions">
+                <button id="calculate-btn">Calculate</button>
+                <button id="reset-btn">Reset</button>
+            </div>
+        </section>
+        
+        <section id="results-section" class="hidden">
+            <h2>Calculation Results</h2>
+            
+            <div class="result-item">
+                <span>Selected State:</span>
+                <span id="result-state"></span>
+            </div>
+            
+            <div class="result-item">
+                <span>OCAF Factor:</span>
+                <span id="result-ocaf-factor"></span>
+            </div>
+            
+            <div class="result-item">
+                <span>Current Debt Service:</span>
+                <span id="result-debt-service"></span>
+            </div>
+            
+            <div class="result-item">
+                <span>Adjusted Amount:</span>
+                <span id="result-adjusted-amount"></span>
+            </div>
+            
+            <h3>Unit Matrix Results</h3>
+            <table id="unit-matrix-results">
+                <thead>
+                    <tr>
+                        <th>Unit Type</th>
+                        <th>Number of Units</th>
+                        <th>Square Footage</th>
+                        <th>Current Rent</th>
+                        <th>Adjusted Rent</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Results will be populated from JavaScript -->
+                </tbody>
+            </table>
+            
+            <div class="actions">
+                <button id="export-pdf">Export as PDF</button>
+                <button id="export-excel">Export as Excel</button>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <p>OCAF CALC - Operating Cost Adjustment Factor Calculator</p>
     </footer>
-  </body>
+    
+    <script src="js/app.js"></script>
+</body>
 </html>
