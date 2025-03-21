@@ -5,6 +5,8 @@ let customRowCount = 0; // Counter for custom added rows
 // DOM elements
 const stateSelect = document.getElementById('state-select');
 const currentDebtService = document.getElementById('current-debt-service');
+const nonExpiringRentPotential = document.getElementById('non-expiring-rent-potential');
+const nonSection8RentPotential = document.getElementById('non-section8-rent-potential');
 const unitMatrix = document.getElementById('unit-matrix');
 const addRowBtn = document.getElementById('add-row-btn');
 const calculateBtn = document.getElementById('calculate-btn');
@@ -86,6 +88,10 @@ function initialize() {
 function setupNumberFormatting() {
     // Set up the current debt service input
     setupNumberInput(currentDebtService);
+    
+    // Set up the new inputs
+    setupNumberInput(nonExpiringRentPotential);
+    setupNumberInput(nonSection8RentPotential);
     
     // Set up all unit count inputs
     const unitCounts = document.querySelectorAll('.unit-count');
@@ -371,6 +377,8 @@ function resetForm() {
     // Reset dropdown and inputs
     stateSelect.value = '';
     currentDebtService.value = '';
+    nonExpiringRentPotential.value = '';
+    nonSection8RentPotential.value = '';
     
     // Hide OCAF factor display
     selectedOcafDisplay.classList.add('hidden');

@@ -40,6 +40,11 @@ h3 {
     margin-bottom: 15px;
 }
 
+/* Extra spacing class for the state select form group */
+.extra-spacing {
+    margin-top: 38px; /* 50% more spacing between button and state selector */
+}
+
 label {
     display: block;
     margin-bottom: 5px;
