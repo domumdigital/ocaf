@@ -12,21 +12,12 @@ const addRowBtn = document.getElementById('add-row-btn');
 const calculateBtn = document.getElementById('calculate-btn');
 const resetBtn = document.getElementById('reset-btn');
 const resultsSection = document.getElementById('results-section');
-const resultState = document.getElementById('result-state');
-const resultOcafFactor = document.getElementById('result-ocaf-factor');
-const resultDebtService = document.getElementById('result-debt-service');
-const resultAdjustedAmount = document.getElementById('result-adjusted-amount');
-const unitMatrixResults = document.getElementById('unit-matrix-results').querySelector('tbody');
-const resultTotalCurrent = document.getElementById('result-total-current');
-const resultTotalAdjusted = document.getElementById('result-total-adjusted');
-const resultAnnualCurrent = document.getElementById('result-annual-current');
-const resultAnnualAdjusted = document.getElementById('result-annual-adjusted');
+const totalRentPotential = document.getElementById('total-rent-potential');
+const annualRentPotential = document.getElementById('annual-rent-potential');
 const exportPdfBtn = document.getElementById('export-pdf');
 const exportExcelBtn = document.getElementById('export-excel');
 const selectedOcafDisplay = document.getElementById('selected-ocaf-display');
 const selectedOcafFactor = document.getElementById('selected-ocaf-factor');
-const totalRentPotential = document.getElementById('total-rent-potential');
-const annualRentPotential = document.getElementById('annual-rent-potential');
 
 // Initialize the application when the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', initialize);
@@ -248,7 +239,7 @@ function updateSelectedOcafFactor() {
     }
 }
 
-// Perform the calculation
+// Perform the calculation - Updated with the corrected formulas for (O) and (P)
 function performCalculation() {
     // Validate inputs
     if (!validateInputs()) {
@@ -260,20 +251,51 @@ function performCalculation() {
     const selectedStateData = ocafFactors[selectedState];
     const ocafFactor = selectedStateData.factor;
     
-    // Get current debt service
-    const debtService = parseFormattedNumber(currentDebtService.value);
+    // Get values from inputs
+    const annualSect8RentPotential = parseFormattedNumber(annualRentPotential.textContent); // (F)
+    const annualNonExpiringRentPotential = parseFormattedNumber(nonExpiringRentPotential.value); // (G)
+    const annualNonSect8RentPotential = parseFormattedNumber(nonSection8RentPotential.value); // (H)
+    const debtService = parseFormattedNumber(currentDebtService.value); // (K)
     
-    // Calculate adjusted amount
-    const adjustedAmount = debtService * ocafFactor;
+    // Step 2: Perform calculations
+    // (I) = (F) + (G) + (H) - Total Annual Project Rent Potential
+    const totalAnnualProjectRentPotential = annualSect8RentPotential + annualNonExpiringRentPotential + annualNonSect8RentPotential;
     
-    // Display results
-    resultState.textContent = selectedStateData.name + ' (' + selectedState + ')';
-    resultOcafFactor.textContent = ocafFactor.toFixed(3);
-    resultDebtService.textContent = formatCurrency(debtService);
-    resultAdjustedAmount.textContent = formatCurrency(adjustedAmount);
+    // (J) = (F) / (I) - Expiring Section 8 Percentage of Total
+    const expiringSect8Percentage = totalAnnualProjectRentPotential > 0 ? 
+        annualSect8RentPotential / totalAnnualProjectRentPotential : 0;
     
-    // Calculate and display unit matrix results
-    calculateUnitMatrixResults(ocafFactor);
+    // (L) = (J) * (K) - Section 8 Portion of Current Debt Service
+    const sect8PortionOfDebtService = expiringSect8Percentage * debtService;
+    
+    // (M) = (F) - (L) - Annual Expiring Section 8 Contract Rent Potential minus Section 8 Portion of Current Debt Service
+    const annualExpiringSect8MinusDebtService = annualSect8RentPotential - sect8PortionOfDebtService;
+    
+    // (O) = (M) * (N) - Annual Expiring Section 8 Rent Potential Attributed to Operations Multiplied by Published OCAF
+    const sect8RentPotentialOperations = annualExpiringSect8MinusDebtService * ocafFactor;
+    
+    // (P) = (L) + (O) - Adjusted Contract Rent Potential
+    const adjustedContractRentPotential = sect8PortionOfDebtService + sect8RentPotentialOperations;
+    
+    // (Q) = (P) - Total Annual Project Debt Service (always equals P)
+    const totalAnnualProjectDebtService = adjustedContractRentPotential;
+    
+    // Update the DOM with calculation results
+    document.getElementById('result-state').textContent = selectedStateData.name + ' (' + selectedState + ')';
+    document.getElementById('result-ocaf-factor').textContent = ocafFactor.toFixed(3);
+    document.getElementById('result-current-debt').textContent = formatCurrency(debtService);
+    
+    // Update Step 2 calculations
+    document.getElementById('total-annual-project-rent').textContent = formatCurrency(totalAnnualProjectRentPotential);
+    document.getElementById('expiring-section8-percentage').textContent = (expiringSect8Percentage * 100).toFixed(2) + '%';
+    document.getElementById('section8-portion-debt').textContent = formatCurrency(sect8PortionOfDebtService);
+    document.getElementById('ocaf-adjusted-section8-debt').textContent = formatCurrency(annualExpiringSect8MinusDebtService);
+    document.getElementById('section8-rent-operations').textContent = formatCurrency(sect8RentPotentialOperations);
+    document.getElementById('adjusted-contract-rent').textContent = formatCurrency(adjustedContractRentPotential);
+    
+    // Update Step 3 results
+    document.getElementById('result-current-debt-service').textContent = formatCurrency(debtService);
+    document.getElementById('result-total-annual-project-debt').textContent = formatCurrency(totalAnnualProjectDebtService);
     
     // Show results section
     resultsSection.classList.remove('hidden');
@@ -312,64 +334,6 @@ function validateInputs() {
     }
     
     return true;
-}
-
-// Calculate results for the unit matrix
-function calculateUnitMatrixResults(ocafFactor) {
-    // Clear previous results
-    unitMatrixResults.innerHTML = '';
-    
-    // Get all rows from the unit matrix
-    const rows = unitMatrix.querySelectorAll('tbody tr');
-    
-    let totalCurrentPotential = 0;
-    let totalAdjustedPotential = 0;
-    
-    // Process each row
-    rows.forEach(row => {
-        // Get values from the row
-        const unitType = row.querySelector('.unit-type').value || 'Unit';
-        const unitCount = parseFormattedNumber(row.querySelector('.unit-count').value) || 0;
-        const unitRent = parseFormattedNumber(row.querySelector('.unit-rent').value) || 0;
-        
-        // Skip rows with no units
-        if (unitCount === 0) {
-            return;
-        }
-        
-        // Calculate rent potentials
-        const currentPotential = unitCount * unitRent;
-        const adjustedRent = unitRent * ocafFactor;
-        const adjustedPotential = unitCount * adjustedRent;
-        
-        // Add to totals
-        totalCurrentPotential += currentPotential;
-        totalAdjustedPotential += adjustedPotential;
-        
-        // Create a new row for results
-        const resultRow = document.createElement('tr');
-        resultRow.innerHTML = `
-            <td>${unitType}</td>
-            <td>${Math.round(unitCount)}</td>
-            <td>${formatCurrency(unitRent)}</td>
-            <td>${formatCurrency(currentPotential)}</td>
-            <td>${formatCurrency(adjustedRent)}</td>
-            <td>${formatCurrency(adjustedPotential)}</td>
-        `;
-        
-        // Add the row to results table
-        unitMatrixResults.appendChild(resultRow);
-    });
-    
-    // Calculate annual totals
-    const annualCurrentPotential = totalCurrentPotential * 12;
-    const annualAdjustedPotential = totalAdjustedPotential * 12;
-    
-    // Update totals in the results
-    resultTotalCurrent.textContent = formatCurrency(totalCurrentPotential);
-    resultTotalAdjusted.textContent = formatCurrency(totalAdjustedPotential);
-    resultAnnualCurrent.textContent = formatCurrency(annualCurrentPotential);
-    resultAnnualAdjusted.textContent = formatCurrency(annualAdjustedPotential);
 }
 
 // Reset the form

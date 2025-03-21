@@ -224,6 +224,59 @@ table input {
     display: none;
 }
 
+/* Calculation tables */
+#calculation-table,
+#final-results-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+    border: 1px solid #ddd;
+}
+
+#calculation-table td,
+#final-results-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+#calculation-table tr:last-child td,
+#final-results-table tr:last-child td {
+    border-bottom: none;
+}
+
+#calculation-table td:first-child,
+#final-results-table td:first-child {
+    width: 70%;
+    font-weight: bold;
+}
+
+#calculation-table td:last-child,
+#final-results-table td:last-child {
+    width: 30%;
+    text-align: right;
+    font-weight: bold;
+}
+
+/* Step 3 styling */
+#final-results-table {
+    background-color: #f8f9fa;
+}
+
+#final-results-table td:first-child {
+    color: #2c3e50;
+}
+
+#final-results-table td:last-child {
+    font-size: 1.1em;
+    color: #27ae60;
+}
+
+/* Highlight the final result row */
+#final-results-table tr:last-child td {
+    background-color: #e8f4f8;
+    border-top: 2px solid #3498db;
+}
+
 /* Actions */
 .actions {
     margin-top: 20px;
