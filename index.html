@@ -65,6 +65,16 @@
             
             <button id="add-row-btn">Add Another Unit Type</button>
             
+            <div class="form-group">
+                <label for="non-expiring-rent-potential">(G) Total Annual Rent Potential For Non-Expiring Section 8 Contracts ($):</label>
+                <input type="text" id="non-expiring-rent-potential" class="number-input" min="0" step="0.01">
+            </div>
+            
+            <div class="form-group">
+                <label for="non-section8-rent-potential">(H) Total Annual Rent Potential For Non-Sec. 8 Units ($):</label>
+                <input type="text" id="non-section8-rent-potential" class="number-input" min="0" step="0.01">
+            </div>
+            
             <div class="form-group extra-spacing">
                 <label for="state-select">(N) Select State:</label>
                 <select id="state-select">
@@ -79,16 +89,6 @@
             <div class="form-group">
                 <label for="current-debt-service">(K) Current Debt Service ($):</label>
                 <input type="text" id="current-debt-service" class="number-input" min="0" step="0.01">
-            </div>
-            
-            <div class="form-group">
-                <label for="non-expiring-rent-potential">(G) Total Annual Rent Potential For Non-Expiring Section 8 Contracts ($):</label>
-                <input type="text" id="non-expiring-rent-potential" class="number-input" min="0" step="0.01">
-            </div>
-            
-            <div class="form-group">
-                <label for="non-section8-rent-potential">(H) Total Annual Rent Potential For Non-Sec. 8 Units ($):</label>
-                <input type="text" id="non-section8-rent-potential" class="number-input" min="0" step="0.01">
             </div>
             
             <div class="actions">
@@ -110,45 +110,52 @@
                 <span id="result-ocaf-factor"></span>
             </div>
             
-            <div class="result-item">
-                <span>Current Debt Service:</span>
-                <span id="result-debt-service"></span>
-            </div>
-            
-            <div class="result-item">
-                <span>Adjusted Amount:</span>
-                <span id="result-adjusted-amount"></span>
-            </div>
-            
-            <h3>Unit Matrix Results</h3>
-            <table id="unit-matrix-results">
-                <thead>
-                    <tr>
-                        <th>Unit Type</th>
-                        <th># of Units</th>
-                        <th>Current Contract Rent</th>
-                        <th>Current Rent Potential</th>
-                        <th>Adjusted Rent</th>
-                        <th>Adjusted Rent Potential</th>
-                    </tr>
-                </thead>
+            <h3>Step 2: Calculate OCAF Adjustment</h3>
+            <table id="calculation-table">
                 <tbody>
-                    <!-- Results will be populated from JavaScript -->
+                    <tr>
+                        <td>(I) Total Annual Project Rent Potential (F + G + H):</td>
+                        <td id="total-annual-project-rent">$0.00</td>
+                    </tr>
+                    <tr>
+                        <td>(J) Expiring Section 8 Percentage of Total (F ÷ I):</td>
+                        <td id="expiring-section8-percentage">0.00%</td>
+                    </tr>
+                    <tr>
+                        <td>(K) Current Debt Service:</td>
+                        <td id="result-current-debt">$0.00</td>
+                    </tr>
+                    <tr>
+                        <td>(L) Section 8 Portion of Current Debt Service (J × K):</td>
+                        <td id="section8-portion-debt">$0.00</td>
+                    </tr>
+                    <tr>
+                        <td>(M) Annual Expiring Section 8 Contract Rent Potential minus Section 8 Portion of Current Debt Service (F - L):</td>
+                        <td id="ocaf-adjusted-section8-debt">$0.00</td>
+                    </tr>
+                    <tr>
+                        <td>(O) Annual Expiring Section 8 Rent Potential Attributed to Operations Multiplied by Published OCAF (M × N):</td>
+                        <td id="section8-rent-operations">$0.00</td>
+                    </tr>
+                    <tr>
+                        <td>(P) Adjusted Contract Rent Potential (L + O):</td>
+                        <td id="adjusted-contract-rent">$0.00</td>
+                    </tr>
                 </tbody>
-                <tfoot>
+            </table>
+            
+            <h3>Step 3: Final Results</h3>
+            <table id="final-results-table">
+                <tbody>
                     <tr>
-                        <td colspan="3"><strong>Total Monthly Rent Potential:</strong></td>
-                        <td id="result-total-current"></td>
-                        <td></td>
-                        <td id="result-total-adjusted"></td>
+                        <td>(K) Current Debt Service:</td>
+                        <td id="result-current-debt-service">$0.00</td>
                     </tr>
                     <tr>
-                        <td colspan="3"><strong>Total Annual Rent Potential:</strong></td>
-                        <td id="result-annual-current"></td>
-                        <td></td>
-                        <td id="result-annual-adjusted"></td>
+                        <td>(Q) Total Annual Project Debt Service (= P):</td>
+                        <td id="result-total-annual-project-debt">$0.00</td>
                     </tr>
-                </tfoot>
+                </tbody>
             </table>
             
             <div class="actions">
