@@ -152,19 +152,30 @@
                 </tbody>
             </table>
             
-            <h3>Step 3: Final Results</h3>
-            <table id="final-results-table">
-                <tbody>
-                    <tr>
-                        <td>(K) Current Debt Service:</td>
-                        <td id="result-current-debt-service">$0.00</td>
-                    </tr>
-                    <tr>
-                        <td>(Q) Total Annual Project Debt Service (= P):</td>
-                        <td id="result-total-annual-project-debt">$0.00</td>
-                    </tr>
-                </tbody>
-            </table>
+            <h3>Step 3: Adjusted Rents</h3>
+            <div class="unit-matrix-container">
+                <table id="adjusted-rents-table">
+                    <thead>
+                        <tr>
+                            <th>(S)<br>Unit Type and<br>Contract and/or<br>Stage</th>
+                            <th>(T)<br># of Units</th>
+                            <th>(U)<br>Current Section 8<br>Contract Rents</th>
+                            <th>(V)<br>Adjusted Contract<br>Rents</th>
+                            <th>(W)<br>Annual Adjusted<br>Contract Rents</th>
+                            <th>(X)<br>Annual Adjusted<br>Rent Potential</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- This will be filled dynamically with JavaScript -->
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="5" class="text-right"><strong>(Y) Annual Adjusted Rent Potential of the Expiring Contract(s)</strong></td>
+                            <td id="annual-adjusted-rent-potential">$0.00</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
             
             <div class="actions">
                 <button id="export-pdf">Export as PDF</button>
