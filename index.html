@@ -16,6 +16,8 @@
         <section id="input-section">
             <h2>Input Information</h2>
             
+            <h3 class="step-heading">Step 1: Calculate the current Section 8 Rent Potential for EXPIRING contracts</h3>
+            
             <h3>Unit Matrix</h3>
             <div class="unit-matrix-container">
                 <table id="unit-matrix">
@@ -51,12 +53,10 @@
                 
                 <div class="unit-matrix-footer">
                     <div class="footer-row">
-                        <div class="footer-spacer"></div>
                         <div class="footer-label">(E) Monthly Expiring Section 8 Contract Rent Potential (Total of column D)</div>
                         <div class="footer-value" id="total-rent-potential">$0.00</div>
                     </div>
                     <div class="footer-row">
-                        <div class="footer-spacer"></div>
                         <div class="footer-label">(F) Annual Expiring Section 8 Contract Rent Potential (E x 12)</div>
                         <div class="footer-value" id="annual-rent-potential">$0.00</div>
                     </div>
@@ -65,7 +65,7 @@
             
             <button id="add-row-btn">Add Another Unit Type</button>
             
-            <div class="form-group">
+            <div class="form-group first-form-group">
                 <label for="non-expiring-rent-potential">(G) Total Annual Rent Potential For Non-Expiring Section 8 Contracts ($):</label>
                 <input type="text" id="non-expiring-rent-potential" class="number-input" min="0" step="0.01">
             </div>
@@ -110,7 +110,7 @@
                 <span id="result-ocaf-factor"></span>
             </div>
             
-            <h3>Step 2: Calculate Increase Factor Adjusted by OCAF for Expiring Contracts</h3>
+            <h3 class="step-heading">Step 2: Calculate Increase Factor Adjusted by OCAF for Expiring Contracts</h3>
             <table id="calculation-table">
                 <tbody>
                     <tr>
@@ -152,7 +152,7 @@
                 </tbody>
             </table>
             
-            <h3>Step 3: Adjusted Rents</h3>
+            <h3 class="step-heading">Step 3: Adjusted Rents</h3>
             <div class="unit-matrix-container">
                 <table id="adjusted-rents-table">
                     <thead>

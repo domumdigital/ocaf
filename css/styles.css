@@ -35,9 +35,24 @@ h3 {
     margin: 20px 0 10px;
 }
 
+/* Step Heading Styles */
+.step-heading {
+    background-color: #f8f9fa;
+    padding: 10px 15px;
+    border-left: 3px solid #3498db;
+    color: #2c3e50;
+    font-size: 1.1em;
+    margin: 30px 0 20px;
+}
+
 /* Form styles */
 .form-group {
     margin-bottom: 15px;
+}
+
+/* Specific spacing class for the first form group after the button */
+.first-form-group {
+    margin-top: 30px; /* Add spacing above the first form group that follows the button */
 }
 
 /* Extra spacing class for the state select form group */
@@ -83,6 +98,11 @@ button:hover {
 
 #reset-btn:hover {
     background-color: #c0392b;
+}
+
+/* Add button spacing */
+#add-row-btn {
+    margin-bottom: 20px;
 }
 
 /* Unit Matrix Container and Layout */
@@ -165,12 +185,8 @@ table input {
     border-bottom: none;
 }
 
-.footer-spacer {
-    width: 70%; /* Combined width of first three columns */
-}
-
 .footer-label {
-    width: calc(30% - 120px); /* Width of column D minus the value box */
+    width: 70%; /* Width of columns A, B, and C combined */
     text-align: right;
     padding-right: 10px;
     font-weight: bold;
@@ -178,7 +194,7 @@ table input {
 }
 
 .footer-value {
-    width: 120px;
+    width: 30%; /* Width of column D */
     text-align: right;
     font-weight: bold;
     padding: 5px 10px;
@@ -363,16 +379,12 @@ footer {
         width: 100%;
     }
     
-    .footer-spacer {
-        width: 50%;
-    }
-    
     .footer-label {
-        width: calc(50% - 80px);
+        width: 60%;
         font-size: 0.8em;
     }
     
     .footer-value {
-        width: 80px;
+        width: 40%;
     }
 }
