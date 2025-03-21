@@ -16,22 +16,6 @@
         <section id="input-section">
             <h2>Input Information</h2>
             
-            <div class="form-group">
-                <label for="state-select">Select State:</label>
-                <select id="state-select">
-                    <option value="">-- Select a State --</option>
-                    <!-- States will be populated from JavaScript -->
-                </select>
-                <div id="selected-ocaf-display" class="ocaf-display hidden">
-                    OCAF Factor: <span id="selected-ocaf-factor"></span>
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label for="current-debt-service">Current Debt Service ($):</label>
-                <input type="text" id="current-debt-service" class="number-input" min="0" step="0.01">
-            </div>
-            
             <h3>Unit Matrix</h3>
             <div class="unit-matrix-container">
                 <table id="unit-matrix">
@@ -80,6 +64,32 @@
             </div>
             
             <button id="add-row-btn">Add Another Unit Type</button>
+            
+            <div class="form-group extra-spacing">
+                <label for="state-select">(N) Select State:</label>
+                <select id="state-select">
+                    <option value="">-- Select a State --</option>
+                    <!-- States will be populated from JavaScript -->
+                </select>
+                <div id="selected-ocaf-display" class="ocaf-display hidden">
+                    OCAF Factor: <span id="selected-ocaf-factor"></span>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="current-debt-service">(K) Current Debt Service ($):</label>
+                <input type="text" id="current-debt-service" class="number-input" min="0" step="0.01">
+            </div>
+            
+            <div class="form-group">
+                <label for="non-expiring-rent-potential">(G) Total Annual Rent Potential For Non-Expiring Section 8 Contracts ($):</label>
+                <input type="text" id="non-expiring-rent-potential" class="number-input" min="0" step="0.01">
+            </div>
+            
+            <div class="form-group">
+                <label for="non-section8-rent-potential">(H) Total Annual Rent Potential For Non-Sec. 8 Units ($):</label>
+                <input type="text" id="non-section8-rent-potential" class="number-input" min="0" step="0.01">
+            </div>
             
             <div class="actions">
                 <button id="calculate-btn">Calculate</button>
