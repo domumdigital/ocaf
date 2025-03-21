@@ -1,2 +1,0 @@
-# ocaf
-OCAF Calculator
