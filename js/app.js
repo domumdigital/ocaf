@@ -15,11 +15,33 @@ const resultOcafFactor = document.getElementById('result-ocaf-factor');
 const resultDebtService = document.getElementById('result-debt-service');
 const resultAdjustedAmount = document.getElementById('result-adjusted-amount');
 const unitMatrixResults = document.getElementById('unit-matrix-results').querySelector('tbody');
+const resultTotalCurrent = document.getElementById('result-total-current');
+const resultTotalAdjusted = document.getElementById('result-total-adjusted');
+const resultAnnualCurrent = document.getElementById('result-annual-current');
+const resultAnnualAdjusted = document.getElementById('result-annual-adjusted');
 const exportPdfBtn = document.getElementById('export-pdf');
 const exportExcelBtn = document.getElementById('export-excel');
+const selectedOcafDisplay = document.getElementById('selected-ocaf-display');
+const selectedOcafFactor = document.getElementById('selected-ocaf-factor');
+const totalRentPotential = document.getElementById('total-rent-potential');
+const annualRentPotential = document.getElementById('annual-rent-potential');
 
 // Initialize the application when the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', initialize);
+
+// Format currency with commas and two decimal places
+function formatCurrency(amount) {
+    return '$' + amount.toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+}
+
+// Parse currency string to number
+function parseCurrency(currencyString) {
+    if (!currencyString) return 0;
+    return parseFloat(currencyString.replace(/[$,]/g, '')) || 0;
+}
 
 function initialize() {
     // Load OCAF factors from JSON file
@@ -31,6 +53,42 @@ function initialize() {
     resetBtn.addEventListener('click', resetForm);
     exportPdfBtn.addEventListener('click', exportAsPdf);
     exportExcelBtn.addEventListener('click', exportAsExcel);
+    
+    // Add event listener for state selection change
+    stateSelect.addEventListener('change', updateSelectedOcafFactor);
+    
+    // Add event listeners for real-time calculation updates in the unit matrix
+    const tbody = unitMatrix.querySelector('tbody');
+    tbody.addEventListener('input', updateUnitMatrixCalculations);
+    
+    // Set up currency input formatting
+    setupCurrencyInputs();
+    
+    // Initial calculation update
+    updateUnitMatrixCalculations();
+}
+
+// Set up currency input formatting
+function setupCurrencyInputs() {
+    // Set up formatters for all currency inputs
+    const currencyInputs = document.querySelectorAll('.currency-input');
+    currencyInputs.forEach(input => {
+        // Format when input loses focus
+        input.addEventListener('blur', function() {
+            const value = parseCurrency(this.value);
+            if (!isNaN(value)) {
+                this.value = formatCurrency(value).replace('$', '');
+            }
+        });
+        
+        // Clear formatting when input gets focus
+        input.addEventListener('focus', function() {
+            const value = parseCurrency(this.value);
+            if (!isNaN(value)) {
+                this.value = value.toFixed(2);
+            }
+        });
+    });
 }
 
 // Load OCAF factors from JSON file
@@ -43,7 +101,8 @@ function loadOcafFactors() {
             return response.json();
         })
         .then(data => {
-            ocafFactors = data;
+            // Access the nested state factors inside the "2025factors" object
+            ocafFactors = data["2025factors"];
             populateStateDropdown();
         })
         .catch(error => {
@@ -54,14 +113,17 @@ function loadOcafFactors() {
 
 // Populate state dropdown with options from the OCAF factors
 function populateStateDropdown() {
-    // Sort states alphabetically
-    const states = Object.keys(ocafFactors).sort();
+    // Get states and sort by full name
+    const states = Object.keys(ocafFactors);
+    states.sort((a, b) => {
+        return ocafFactors[a].name.localeCompare(ocafFactors[b].name);
+    });
     
     // Create and append options to the dropdown
-    states.forEach(state => {
+    states.forEach(stateCode => {
         const option = document.createElement('option');
-        option.value = state;
-        option.textContent = state;
+        option.value = stateCode;
+        option.textContent = ocafFactors[stateCode].name + ' (' + stateCode + ')';
         stateSelect.appendChild(option);
     });
 }
@@ -72,12 +134,10 @@ function addUnitMatrixRow() {
     const newRow = document.createElement('tr');
     
     newRow.innerHTML = `
-        <td>
-            <input type="text" class="unit-type" placeholder="Custom Unit ${customRowCount}">
-        </td>
+        <td><input type="text" class="unit-type" placeholder="Custom Unit ${customRowCount}"></td>
         <td><input type="number" class="unit-count" min="0"></td>
-        <td><input type="number" class="unit-sqft" min="0"></td>
-        <td><input type="number" class="unit-rent" min="0" step="0.01"></td>
+        <td><input type="text" class="unit-rent currency-input" min="0" step="0.01"></td>
+        <td class="calculated-cell rent-potential">$0.00</td>
         <td><button class="remove-row-btn">Remove</button></td>
     `;
     
@@ -85,10 +145,53 @@ function addUnitMatrixRow() {
     const removeBtn = newRow.querySelector('.remove-row-btn');
     removeBtn.addEventListener('click', function() {
         unitMatrix.querySelector('tbody').removeChild(newRow);
+        updateUnitMatrixCalculations();
     });
     
     // Add the new row to the table
     unitMatrix.querySelector('tbody').appendChild(newRow);
+    
+    // Set up currency formatting for the new row
+    setupCurrencyInputs();
+}
+
+// Update calculations in the Unit Matrix
+function updateUnitMatrixCalculations() {
+    const rows = unitMatrix.querySelectorAll('tbody tr');
+    let monthlyTotal = 0;
+    
+    // Process each row
+    rows.forEach(row => {
+        const unitCount = parseInt(row.querySelector('.unit-count').value) || 0;
+        const unitRent = parseCurrency(row.querySelector('.unit-rent').value) || 0;
+        
+        // Calculate rent potential (B x C)
+        const rentPotential = unitCount * unitRent;
+        monthlyTotal += rentPotential;
+        
+        // Update the cell with formatted currency
+        row.querySelector('.rent-potential').textContent = formatCurrency(rentPotential);
+    });
+    
+    // Calculate annual total (E x 12)
+    const annualTotal = monthlyTotal * 12;
+    
+    // Update the totals with formatted currency
+    totalRentPotential.textContent = formatCurrency(monthlyTotal);
+    annualRentPotential.textContent = formatCurrency(annualTotal);
+}
+
+// Update the OCAF factor display when state selection changes
+function updateSelectedOcafFactor() {
+    const selectedState = stateSelect.value;
+    
+    if (selectedState) {
+        const ocafFactor = ocafFactors[selectedState].factor;
+        selectedOcafFactor.textContent = ocafFactor.toFixed(3);
+        selectedOcafDisplay.classList.remove('hidden');
+    } else {
+        selectedOcafDisplay.classList.add('hidden');
+    }
 }
 
 // Perform the calculation
@@ -100,19 +203,20 @@ function performCalculation() {
     
     // Get selected state and its OCAF factor
     const selectedState = stateSelect.value;
-    const ocafFactor = ocafFactors[selectedState];
+    const selectedStateData = ocafFactors[selectedState];
+    const ocafFactor = selectedStateData.factor;
     
     // Get current debt service
-    const debtService = parseFloat(currentDebtService.value);
+    const debtService = parseCurrency(currentDebtService.value);
     
     // Calculate adjusted amount
     const adjustedAmount = debtService * ocafFactor;
     
     // Display results
-    resultState.textContent = selectedState;
+    resultState.textContent = selectedStateData.name + ' (' + selectedState + ')';
     resultOcafFactor.textContent = ocafFactor.toFixed(3);
-    resultDebtService.textContent = '$' + debtService.toFixed(2);
-    resultAdjustedAmount.textContent = '$' + adjustedAmount.toFixed(2);
+    resultDebtService.textContent = formatCurrency(debtService);
+    resultAdjustedAmount.textContent = formatCurrency(adjustedAmount);
     
     // Calculate and display unit matrix results
     calculateUnitMatrixResults(ocafFactor);
@@ -131,7 +235,7 @@ function validateInputs() {
     }
     
     // Check if current debt service is provided
-    if (!currentDebtService.value || isNaN(parseFloat(currentDebtService.value))) {
+    if (!currentDebtService.value || isNaN(parseCurrency(currentDebtService.value))) {
         alert('Please enter a valid Current Debt Service amount.');
         currentDebtService.focus();
         return false;
@@ -164,35 +268,54 @@ function calculateUnitMatrixResults(ocafFactor) {
     // Get all rows from the unit matrix
     const rows = unitMatrix.querySelectorAll('tbody tr');
     
+    let totalCurrentPotential = 0;
+    let totalAdjustedPotential = 0;
+    
     // Process each row
     rows.forEach(row => {
         // Get values from the row
-        const unitType = row.querySelector('td:first-child').textContent || row.querySelector('.unit-type').value;
+        const unitType = row.querySelector('.unit-type').value || 'Unit';
         const unitCount = parseInt(row.querySelector('.unit-count').value) || 0;
-        const unitSqft = parseInt(row.querySelector('.unit-sqft').value) || 0;
-        const unitRent = parseFloat(row.querySelector('.unit-rent').value) || 0;
+        const unitRent = parseCurrency(row.querySelector('.unit-rent').value) || 0;
         
         // Skip rows with no units
         if (unitCount === 0) {
             return;
         }
         
-        // Calculate adjusted rent
+        // Calculate rent potentials
+        const currentPotential = unitCount * unitRent;
         const adjustedRent = unitRent * ocafFactor;
+        const adjustedPotential = unitCount * adjustedRent;
+        
+        // Add to totals
+        totalCurrentPotential += currentPotential;
+        totalAdjustedPotential += adjustedPotential;
         
         // Create a new row for results
         const resultRow = document.createElement('tr');
         resultRow.innerHTML = `
             <td>${unitType}</td>
             <td>${unitCount}</td>
-            <td>${unitSqft}</td>
-            <td>$${unitRent.toFixed(2)}</td>
-            <td>$${adjustedRent.toFixed(2)}</td>
+            <td>${formatCurrency(unitRent)}</td>
+            <td>${formatCurrency(currentPotential)}</td>
+            <td>${formatCurrency(adjustedRent)}</td>
+            <td>${formatCurrency(adjustedPotential)}</td>
         `;
         
         // Add the row to results table
         unitMatrixResults.appendChild(resultRow);
     });
+    
+    // Calculate annual totals
+    const annualCurrentPotential = totalCurrentPotential * 12;
+    const annualAdjustedPotential = totalAdjustedPotential * 12;
+    
+    // Update totals in the results
+    resultTotalCurrent.textContent = formatCurrency(totalCurrentPotential);
+    resultTotalAdjusted.textContent = formatCurrency(totalAdjustedPotential);
+    resultAnnualCurrent.textContent = formatCurrency(annualCurrentPotential);
+    resultAnnualAdjusted.textContent = formatCurrency(annualAdjustedPotential);
 }
 
 // Reset the form
@@ -201,20 +324,33 @@ function resetForm() {
     stateSelect.value = '';
     currentDebtService.value = '';
     
+    // Hide OCAF factor display
+    selectedOcafDisplay.classList.add('hidden');
+    
     // Reset unit matrix to default state
     const tbody = unitMatrix.querySelector('tbody');
     
-    // Remove all custom rows
-    const rows = tbody.querySelectorAll('tr');
-    for (let i = 3; i < rows.length; i++) {
-        tbody.removeChild(rows[i]);
-    }
+    // Remove all custom rows (with remove buttons)
+    const customRows = tbody.querySelectorAll('tr:has(.remove-row-btn)');
+    customRows.forEach(row => {
+        tbody.removeChild(row);
+    });
     
     // Clear all inputs in the remaining rows
     const inputs = tbody.querySelectorAll('input');
     inputs.forEach(input => {
         input.value = '';
     });
+    
+    // Reset calculated values
+    const calculatedCells = tbody.querySelectorAll('.calculated-cell');
+    calculatedCells.forEach(cell => {
+        cell.textContent = '$0.00';
+    });
+    
+    // Reset the totals
+    totalRentPotential.textContent = '$0.00';
+    annualRentPotential.textContent = '$0.00';
     
     // Reset custom row counter
     customRowCount = 0;
