@@ -239,7 +239,7 @@ function updateSelectedOcafFactor() {
     }
 }
 
-// Perform the calculation - Updated with the corrected formulas for (O) and (P)
+// Perform the calculation - Updated with the corrected formulas and adding (Q) and (R)
 function performCalculation() {
     // Validate inputs
     if (!validateInputs()) {
@@ -277,8 +277,16 @@ function performCalculation() {
     // (P) = (L) + (O) - Adjusted Contract Rent Potential
     const adjustedContractRentPotential = sect8PortionOfDebtService + sect8RentPotentialOperations;
     
-    // (Q) = (P) - Total Annual Project Debt Service (always equals P)
-    const totalAnnualProjectDebtService = adjustedContractRentPotential;
+    // (Q) = (P) - Lesser of (P) or Comparable Rent Potential From Rent Comparability Study
+    // For now, just setting (Q) = (P) as requested
+    const lesserOfPOrComparableRent = adjustedContractRentPotential;
+    
+    // (R) = (Q) / (F) - Increase Factor
+    const increaseFactor = annualSect8RentPotential > 0 ? 
+        lesserOfPOrComparableRent / annualSect8RentPotential : 0;
+    
+    // (Q) is now used for Total Annual Project Debt Service
+    const totalAnnualProjectDebtService = lesserOfPOrComparableRent;
     
     // Update the DOM with calculation results
     document.getElementById('result-state').textContent = selectedStateData.name + ' (' + selectedState + ')';
@@ -292,6 +300,8 @@ function performCalculation() {
     document.getElementById('ocaf-adjusted-section8-debt').textContent = formatCurrency(annualExpiringSect8MinusDebtService);
     document.getElementById('section8-rent-operations').textContent = formatCurrency(sect8RentPotentialOperations);
     document.getElementById('adjusted-contract-rent').textContent = formatCurrency(adjustedContractRentPotential);
+    document.getElementById('lesser-of-p-or-comparable').textContent = formatCurrency(lesserOfPOrComparableRent);
+    document.getElementById('increase-factor').textContent = increaseFactor.toFixed(4);
     
     // Update Step 3 results
     document.getElementById('result-current-debt-service').textContent = formatCurrency(debtService);
