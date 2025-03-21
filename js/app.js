@@ -18,6 +18,8 @@ const exportPdfBtn = document.getElementById('export-pdf');
 const exportExcelBtn = document.getElementById('export-excel');
 const selectedOcafDisplay = document.getElementById('selected-ocaf-display');
 const selectedOcafFactor = document.getElementById('selected-ocaf-factor');
+const adjustedRentsTable = document.getElementById('adjusted-rents-table');
+const annualAdjustedRentPotential = document.getElementById('annual-adjusted-rent-potential');
 
 // Initialize the application when the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', initialize);
@@ -239,7 +241,7 @@ function updateSelectedOcafFactor() {
     }
 }
 
-// Perform the calculation - Updated with the corrected formulas and adding (Q) and (R)
+// Perform the calculation - Updated with the corrected formulas and adding Step 3 calculations
 function performCalculation() {
     // Validate inputs
     if (!validateInputs()) {
@@ -285,9 +287,6 @@ function performCalculation() {
     const increaseFactor = annualSect8RentPotential > 0 ? 
         lesserOfPOrComparableRent / annualSect8RentPotential : 0;
     
-    // (Q) is now used for Total Annual Project Debt Service
-    const totalAnnualProjectDebtService = lesserOfPOrComparableRent;
-    
     // Update the DOM with calculation results
     document.getElementById('result-state').textContent = selectedStateData.name + ' (' + selectedState + ')';
     document.getElementById('result-ocaf-factor').textContent = ocafFactor.toFixed(3);
@@ -303,12 +302,65 @@ function performCalculation() {
     document.getElementById('lesser-of-p-or-comparable').textContent = formatCurrency(lesserOfPOrComparableRent);
     document.getElementById('increase-factor').textContent = increaseFactor.toFixed(4);
     
-    // Update Step 3 results
-    document.getElementById('result-current-debt-service').textContent = formatCurrency(debtService);
-    document.getElementById('result-total-annual-project-debt').textContent = formatCurrency(totalAnnualProjectDebtService);
+    // Update Step 3 results - Generate the Adjusted Rents table
+    populateAdjustedRentsTable(increaseFactor);
     
     // Show results section
     resultsSection.classList.remove('hidden');
+}
+
+// Populate the Adjusted Rents table in Step 3
+function populateAdjustedRentsTable(increaseFactor) {
+    // Get all rows from the Unit Matrix in Step 1
+    const unitMatrixRows = unitMatrix.querySelectorAll('tbody tr');
+    
+    // Clear existing rows in the Adjusted Rents table
+    const adjustedRentsTbody = adjustedRentsTable.querySelector('tbody');
+    adjustedRentsTbody.innerHTML = '';
+    
+    // Total for column X (to calculate Y)
+    let totalAnnualAdjustedRentPotential = 0;
+    
+    // Process each row from the Unit Matrix
+    unitMatrixRows.forEach(row => {
+        // Get data from Step 1
+        const unitType = row.querySelector('.unit-type').value || 'Unnamed Unit';
+        const unitCount = parseFormattedNumber(row.querySelector('.unit-count').value) || 0;
+        const currentRent = parseFormattedNumber(row.querySelector('.unit-rent').value) || 0;
+        
+        // Only add rows that have both unit count and current rent
+        if (unitCount > 0 && currentRent > 0) {
+            // Calculate new values for Step 3
+            // (V) = (R) * (U), rounded to nearest whole dollar
+            const adjustedRent = Math.round(increaseFactor * currentRent);
+            
+            // (W) = (V) * 12, using the already rounded value from (V)
+            const annualAdjustedRent = adjustedRent * 12;
+            
+            // (X) = (T) * (W), using the value from (W)
+            const annualRentPotential = unitCount * annualAdjustedRent;
+            
+            // Add to total
+            totalAnnualAdjustedRentPotential += annualRentPotential;
+            
+            // Create new row
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>${unitType}</td>
+                <td>${unitCount}</td>
+                <td>${formatCurrency(currentRent)}</td>
+                <td>${formatCurrency(adjustedRent)}</td>
+                <td>${formatCurrency(annualAdjustedRent)}</td>
+                <td>${formatCurrency(annualRentPotential)}</td>
+            `;
+            
+            // Add row to table
+            adjustedRentsTbody.appendChild(newRow);
+        }
+    });
+    
+    // Update the total (Y)
+    annualAdjustedRentPotential.textContent = formatCurrency(Math.round(totalAnnualAdjustedRentPotential));
 }
 
 // Validate all inputs before calculation
