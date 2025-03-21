@@ -8,8 +8,8 @@
 body {
     font-family: Arial, sans-serif;
     line-height: 1.6;
-    padding: 20px;
-    max-width: 1200px;
+    padding: 40px;
+    max-width: 1000px;
     margin: 0 auto;
     color: #333;
 }
@@ -53,6 +53,12 @@ input, select {
     border-radius: 4px;
 }
 
+/* Currency input styling */
+.currency-input {
+    text-align: right;
+    font-family: monospace;
+}
+
 button {
     background-color: #3498db;
     color: white;
@@ -76,6 +82,41 @@ button:hover {
     background-color: #c0392b;
 }
 
+/* Unit Matrix Container and Layout */
+.unit-matrix-container {
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+/* Table Column Widths */
+#unit-matrix th:nth-child(1) {
+    width: 30%;
+}
+
+#unit-matrix th:nth-child(2) {
+    width: 15%;
+}
+
+#unit-matrix th:nth-child(3) {
+    width: 25%;
+}
+
+#unit-matrix th:nth-child(4) {
+    width: 30%;
+}
+
+/* Table Header Styles */
+#unit-matrix th {
+    text-align: center;
+    background-color: #2c3e50;
+    color: white;
+    padding: 10px;
+    font-weight: normal;
+    border: 1px solid #1a252f;
+}
+
 /* Table styles */
 table {
     width: 100%;
@@ -95,6 +136,68 @@ th {
 
 table input {
     width: 100%;
+}
+
+/* Calculated Cells */
+.calculated-cell {
+    background-color: #f8f9fa;
+    text-align: right;
+    font-weight: bold;
+}
+
+/* Unit Matrix Footer */
+.unit-matrix-footer {
+    background-color: #f8f9fa;
+    border-top: 2px solid #ddd;
+    padding: 0;
+}
+
+.footer-row {
+    display: flex;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.footer-row:last-child {
+    border-bottom: none;
+}
+
+.footer-spacer {
+    width: 70%; /* Combined width of first three columns */
+}
+
+.footer-label {
+    width: calc(30% - 120px); /* Width of column D minus the value box */
+    text-align: right;
+    padding-right: 10px;
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+.footer-value {
+    width: 120px;
+    text-align: right;
+    font-weight: bold;
+    padding: 5px 10px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-right: 10px;
+}
+
+/* OCAF Factor display */
+.ocaf-display {
+    margin-top: 8px;
+    padding: 5px 10px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    border-left: 3px solid #3498db;
+    font-size: 0.9em;
+}
+
+.ocaf-display span {
+    font-weight: bold;
+    color: #2c3e50;
 }
 
 /* Results section */
@@ -139,6 +242,40 @@ table input {
     background-color: #2ecc71;
 }
 
+/* Results table footer */
+#unit-matrix-results tfoot td {
+    text-align: right;
+    padding: 10px;
+    border-top: 1px solid #ddd;
+}
+
+#unit-matrix-results tfoot tr:first-child td {
+    border-top: 2px solid #ddd;
+}
+
+#result-total-current,
+#result-total-adjusted,
+#result-annual-current,
+#result-annual-adjusted {
+    font-weight: bold;
+}
+
+/* Remove button style */
+.remove-row-btn {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 5px 8px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 0.8em;
+    margin: 0;
+}
+
+.remove-row-btn:hover {
+    background-color: #c0392b;
+}
+
 /* Footer */
 footer {
     margin-top: 50px;
@@ -150,6 +287,10 @@ footer {
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
+    body {
+        padding: 20px;
+    }
+    
     table {
         font-size: 14px;
     }
@@ -164,5 +305,18 @@ footer {
     
     .result-item span:first-child {
         width: 100%;
+    }
+    
+    .footer-spacer {
+        width: 50%;
+    }
+    
+    .footer-label {
+        width: calc(50% - 80px);
+        font-size: 0.8em;
+    }
+    
+    .footer-value {
+        width: 80px;
     }
 }

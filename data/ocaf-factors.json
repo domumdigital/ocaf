@@ -1,60 +1,221 @@
 {
   "2025factors": {
-  "AL": 1.053,
-  "AK": 1.051,
-  "AZ": 1.055,
-  "AR": 1.047,
-  "CA": 1.050,
-  "CO": 1.038,
-  "CT": 1.030,
-  "DE": 1.044,
-  "DC": 1.045,
-  "FL": 1.057,
-  "GA": 1.049,
-  "HI": 1.050,
-  "ID": 1.057,
-  "IL": 1.042,
-  "IN": 1.044,
-  "IA": 1.046,
-  "KS": 1.045,
-  "KY": 1.048,
-  "LA": 1.070,
-  "ME": 1.036,
-  "MD": 1.046,
-  "MA": 1.039,
-  "MI": 1.043,
-  "MN": 1.042,
-  "MS": 1.054,
-  "MO": 1.054,
-  "MT": 1.041,
-  "NE": 1.050,
-  "NV": 1.048,
-  "NH": 1.035,
-  "NJ": 1.047,
-  "NM": 1.056,
-  "NY": 1.045,
-  "NC": 1.052,
-  "ND": 1.043,
-  "OH": 1.049,
-  "OK": 1.045,
-  "OR": 1.057,
-  "PI": 1.041,
-  "PA": 1.041,
-  "PR": 1.050,
-  "RI": 1.049,
-  "SC": 1.050,
-  "SD": 1.044,
-  "TN": 1.054,
-  "TX": 1.059,
-  "UT": 1.047,
-  "VT": 1.052,
-  "VI": 1.085,
-  "VA": 1.043,
-  "WA": 1.058,
-  "WV": 1.051,
-  "WI": 1.041,
-  "WY": 1.043,
-  "US": 1.048
+    "AL": {
+      "name": "Alabama",
+      "factor": 1.053
+    },
+    "AK": {
+      "name": "Alaska",
+      "factor": 1.051
+    },
+    "AZ": {
+      "name": "Arizona",
+      "factor": 1.055
+    },
+    "AR": {
+      "name": "Arkansas",
+      "factor": 1.047
+    },
+    "CA": {
+      "name": "California",
+      "factor": 1.050
+    },
+    "CO": {
+      "name": "Colorado",
+      "factor": 1.038
+    },
+    "CT": {
+      "name": "Connecticut",
+      "factor": 1.030
+    },
+    "DE": {
+      "name": "Delaware",
+      "factor": 1.044
+    },
+    "DC": {
+      "name": "District of Columbia",
+      "factor": 1.045
+    },
+    "FL": {
+      "name": "Florida",
+      "factor": 1.057
+    },
+    "GA": {
+      "name": "Georgia",
+      "factor": 1.049
+    },
+    "HI": {
+      "name": "Hawaii",
+      "factor": 1.050
+    },
+    "ID": {
+      "name": "Idaho",
+      "factor": 1.057
+    },
+    "IL": {
+      "name": "Illinois",
+      "factor": 1.042
+    },
+    "IN": {
+      "name": "Indiana",
+      "factor": 1.044
+    },
+    "IA": {
+      "name": "Iowa",
+      "factor": 1.046
+    },
+    "KS": {
+      "name": "Kansas",
+      "factor": 1.045
+    },
+    "KY": {
+      "name": "Kentucky",
+      "factor": 1.048
+    },
+    "LA": {
+      "name": "Louisiana",
+      "factor": 1.070
+    },
+    "ME": {
+      "name": "Maine",
+      "factor": 1.036
+    },
+    "MD": {
+      "name": "Maryland",
+      "factor": 1.046
+    },
+    "MA": {
+      "name": "Massachusetts",
+      "factor": 1.039
+    },
+    "MI": {
+      "name": "Michigan",
+      "factor": 1.043
+    },
+    "MN": {
+      "name": "Minnesota",
+      "factor": 1.042
+    },
+    "MS": {
+      "name": "Mississippi",
+      "factor": 1.054
+    },
+    "MO": {
+      "name": "Missouri",
+      "factor": 1.054
+    },
+    "MT": {
+      "name": "Montana",
+      "factor": 1.041
+    },
+    "NE": {
+      "name": "Nebraska",
+      "factor": 1.050
+    },
+    "NV": {
+      "name": "Nevada",
+      "factor": 1.048
+    },
+    "NH": {
+      "name": "New Hampshire",
+      "factor": 1.035
+    },
+    "NJ": {
+      "name": "New Jersey",
+      "factor": 1.047
+    },
+    "NM": {
+      "name": "New Mexico",
+      "factor": 1.056
+    },
+    "NY": {
+      "name": "New York",
+      "factor": 1.045
+    },
+    "NC": {
+      "name": "North Carolina",
+      "factor": 1.052
+    },
+    "ND": {
+      "name": "North Dakota",
+      "factor": 1.043
+    },
+    "OH": {
+      "name": "Ohio",
+      "factor": 1.049
+    },
+    "OK": {
+      "name": "Oklahoma",
+      "factor": 1.045
+    },
+    "OR": {
+      "name": "Oregon",
+      "factor": 1.057
+    },
+    "PA": {
+      "name": "Pennsylvania",
+      "factor": 1.041
+    },
+    "PR": {
+      "name": "Puerto Rico",
+      "factor": 1.050
+    },
+    "RI": {
+      "name": "Rhode Island",
+      "factor": 1.049
+    },
+    "SC": {
+      "name": "South Carolina",
+      "factor": 1.050
+    },
+    "SD": {
+      "name": "South Dakota",
+      "factor": 1.044
+    },
+    "TN": {
+      "name": "Tennessee",
+      "factor": 1.054
+    },
+    "TX": {
+      "name": "Texas",
+      "factor": 1.059
+    },
+    "UT": {
+      "name": "Utah",
+      "factor": 1.047
+    },
+    "VT": {
+      "name": "Vermont",
+      "factor": 1.052
+    },
+    "VI": {
+      "name": "Virgin Islands",
+      "factor": 1.085
+    },
+    "VA": {
+      "name": "Virginia",
+      "factor": 1.043
+    },
+    "WA": {
+      "name": "Washington",
+      "factor": 1.058
+    },
+    "WV": {
+      "name": "West Virginia",
+      "factor": 1.051
+    },
+    "WI": {
+      "name": "Wisconsin",
+      "factor": 1.041
+    },
+    "WY": {
+      "name": "Wyoming",
+      "factor": 1.043
+    },
+    "US": {
+      "name": "United States Average",
+      "factor": 1.048
+    }
   },
   "lastUpdated": "2025-03-20"
 }
