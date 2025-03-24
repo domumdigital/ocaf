@@ -35,24 +35,9 @@ h3 {
     margin: 20px 0 10px;
 }
 
-/* Step Heading Styles */
-.step-heading {
-    background-color: #f8f9fa;
-    padding: 10px 15px;
-    border-left: 3px solid #3498db;
-    color: #2c3e50;
-    font-size: 1.1em;
-    margin: 30px 0 20px;
-}
-
 /* Form styles */
 .form-group {
     margin-bottom: 15px;
-}
-
-/* Specific spacing class for the first form group after the button */
-.first-form-group {
-    margin-top: 30px; /* Add spacing above the first form group that follows the button */
 }
 
 /* Extra spacing class for the state select form group */
@@ -98,11 +83,6 @@ button:hover {
 
 #reset-btn:hover {
     background-color: #c0392b;
-}
-
-/* Add button spacing */
-#add-row-btn {
-    margin-bottom: 20px;
 }
 
 /* Unit Matrix Container and Layout */
@@ -168,7 +148,7 @@ table input {
     font-weight: bold;
 }
 
-/* Unit Matrix Footer */
+/* Updated Unit Matrix Footer */
 .unit-matrix-footer {
     background-color: #f8f9fa;
     border-top: 2px solid #ddd;
@@ -186,7 +166,7 @@ table input {
 }
 
 .footer-label {
-    width: 70%; /* Width of columns A, B, and C combined */
+    width: 70%; /* Takes up columns A-C (was previously in footer-spacer) */
     text-align: right;
     padding-right: 10px;
     font-weight: bold;
@@ -194,7 +174,7 @@ table input {
 }
 
 .footer-value {
-    width: 30%; /* Width of column D */
+    width: 30%; /* Takes up column D */
     text-align: right;
     font-weight: bold;
     padding: 5px 10px;
@@ -260,17 +240,31 @@ table input {
     border-bottom: none;
 }
 
-#calculation-table td:first-child,
-#final-results-table td:first-child {
-    width: 70%;
+/* Modified calculation table styling to match the screenshot */
+#calculation-table td:first-child {
+    width: 8%;
+    font-weight: bold;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+}
+
+#calculation-table td:nth-child(2) {
+    width: 62%;
+    font-weight: normal;
+    text-align: center;
+}
+
+#calculation-table td:last-child {
+    width: 30%;
+    text-align: center;
     font-weight: bold;
 }
 
-#calculation-table td:last-child,
-#final-results-table td:last-child {
-    width: 30%;
-    text-align: right;
-    font-weight: bold;
+/* Alternating row styling for calculation table */
+#calculation-table tr.alternating-row td:nth-child(2),
+#calculation-table tr.alternating-row td:last-child {
+    background-color: #f2f2f2;
 }
 
 /* Step 3 styling */
@@ -380,11 +374,11 @@ footer {
     }
     
     .footer-label {
-        width: 60%;
+        width: 70%;
         font-size: 0.8em;
     }
     
     .footer-value {
-        width: 40%;
+        width: 30%;
     }
 }

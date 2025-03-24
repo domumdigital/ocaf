@@ -16,9 +16,8 @@
         <section id="input-section">
             <h2>Input Information</h2>
             
-            <h3 class="step-heading">Step 1: Calculate the current Section 8 Rent Potential for EXPIRING contracts</h3>
+            <h3>Step 1: Calculate the current Section 8 Rent Potential for EXPIRING contracts</h3>
             
-            <h3>Unit Matrix</h3>
             <div class="unit-matrix-container">
                 <table id="unit-matrix">
                     <thead>
@@ -65,7 +64,7 @@
             
             <button id="add-row-btn">Add Another Unit Type</button>
             
-            <div class="form-group first-form-group">
+            <div class="form-group">
                 <label for="non-expiring-rent-potential">(G) Total Annual Rent Potential For Non-Expiring Section 8 Contracts ($):</label>
                 <input type="text" id="non-expiring-rent-potential" class="number-input" min="0" step="0.01">
             </div>
@@ -110,49 +109,63 @@
                 <span id="result-ocaf-factor"></span>
             </div>
             
-            <h3 class="step-heading">Step 2: Calculate Increase Factor Adjusted by OCAF for Expiring Contracts</h3>
+            <h3>Step 2: Calculate Increase Factor Adjusted by OCAF for Expiring Contracts</h3>
             <table id="calculation-table">
                 <tbody>
-                    <tr>
-                        <td>(I) Total Annual Project Rent Potential (F + G + H):</td>
+                    <tr class="alternating-row">
+                        <td>(I)</td>
+                        <td>Total Annual Project Rent Potential<br>(F + G + H)</td>
                         <td id="total-annual-project-rent">$0.00</td>
                     </tr>
                     <tr>
-                        <td>(J) Expiring Section 8 Percentage of Total (F ÷ I):</td>
+                        <td>(J)</td>
+                        <td>Expiring Section 8 Portion of<br>Total Project Rent Potential (F ÷ I)</td>
                         <td id="expiring-section8-percentage">0.00%</td>
                     </tr>
-                    <tr>
-                        <td>(K) Current Debt Service:</td>
+                    <tr class="alternating-row">
+                        <td>(K)</td>
+                        <td>Total Annual Project Debt Service</td>
                         <td id="result-current-debt">$0.00</td>
                     </tr>
                     <tr>
-                        <td>(L) Section 8 Portion of Current Debt Service (J × K):</td>
+                        <td>(L)</td>
+                        <td>Annual Expiring Section 8 Share of Debt Service<br>(J x K)</td>
                         <td id="section8-portion-debt">$0.00</td>
                     </tr>
-                    <tr>
-                        <td>(M) Annual Expiring Section 8 Contract Rent Potential minus Section 8 Portion of Current Debt Service (F - L):</td>
+                    <tr class="alternating-row">
+                        <td>(M)</td>
+                        <td>Annual Expiring Section 8 Potential Less Expiring Sec. 8<br>Share of Debt Service (F - L)</td>
                         <td id="ocaf-adjusted-section8-debt">$0.00</td>
                     </tr>
                     <tr>
-                        <td>(O) Annual Expiring Section 8 Rent Potential Attributed to Operations Multiplied by Published OCAF (M × N):</td>
+                        <td>(N)</td>
+                        <td>OCAF Adjustment</td>
+                        <td id="ocaf-adjustment">0.000</td>
+                    </tr>
+                    <tr class="alternating-row">
+                        <td>(O)</td>
+                        <td>Annual Expiring Section 8<br>Rent Potential Attributed to Operations<br>Multiplied by Published OCAF (M x N)</td>
                         <td id="section8-rent-operations">$0.00</td>
                     </tr>
                     <tr>
-                        <td>(P) Adjusted Contract Rent Potential (L + O):</td>
+                        <td>(P)</td>
+                        <td>Adjusted Contract Rent Potential (L + O)</td>
                         <td id="adjusted-contract-rent">$0.00</td>
                     </tr>
-                    <tr>
-                        <td>(Q) Lesser of (P) or Comparable Rent Potential From Rent Comparability Study:</td>
+                    <tr class="alternating-row">
+                        <td>(Q)</td>
+                        <td>Lesser of (P) or Comparable Rent Potential From Rent<br>Comparability Study</td>
                         <td id="lesser-of-p-or-comparable">$0.00</td>
                     </tr>
                     <tr>
-                        <td>(R) Increase Factor (Q ÷ F):</td>
+                        <td>(R)</td>
+                        <td>Increase Factor (Q ÷ F)</td>
                         <td id="increase-factor">0.0000</td>
                     </tr>
                 </tbody>
             </table>
             
-            <h3 class="step-heading">Step 3: Adjusted Rents</h3>
+            <h3>Step 3: Adjusted Rents</h3>
             <div class="unit-matrix-container">
                 <table id="adjusted-rents-table">
                     <thead>
