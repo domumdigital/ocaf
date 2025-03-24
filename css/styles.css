@@ -148,7 +148,7 @@ table input {
     font-weight: bold;
 }
 
-/* Unit Matrix Footer */
+/* Updated Unit Matrix Footer */
 .unit-matrix-footer {
     background-color: #f8f9fa;
     border-top: 2px solid #ddd;
@@ -165,12 +165,8 @@ table input {
     border-bottom: none;
 }
 
-.footer-spacer {
-    width: 70%; /* Combined width of first three columns */
-}
-
 .footer-label {
-    width: calc(30% - 120px); /* Width of column D minus the value box */
+    width: 70%; /* Takes up columns A-C (was previously in footer-spacer) */
     text-align: right;
     padding-right: 10px;
     font-weight: bold;
@@ -178,7 +174,7 @@ table input {
 }
 
 .footer-value {
-    width: 120px;
+    width: 30%; /* Takes up column D */
     text-align: right;
     font-weight: bold;
     padding: 5px 10px;
@@ -244,17 +240,31 @@ table input {
     border-bottom: none;
 }
 
-#calculation-table td:first-child,
-#final-results-table td:first-child {
-    width: 70%;
+/* Modified calculation table styling to match the screenshot */
+#calculation-table td:first-child {
+    width: 8%;
+    font-weight: bold;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+}
+
+#calculation-table td:nth-child(2) {
+    width: 62%;
+    font-weight: normal;
+    text-align: center;
+}
+
+#calculation-table td:last-child {
+    width: 30%;
+    text-align: center;
     font-weight: bold;
 }
 
-#calculation-table td:last-child,
-#final-results-table td:last-child {
-    width: 30%;
-    text-align: right;
-    font-weight: bold;
+/* Alternating row styling for calculation table */
+#calculation-table tr.alternating-row td:nth-child(2),
+#calculation-table tr.alternating-row td:last-child {
+    background-color: #f2f2f2;
 }
 
 /* Step 3 styling */
@@ -363,16 +373,12 @@ footer {
         width: 100%;
     }
     
-    .footer-spacer {
-        width: 50%;
-    }
-    
     .footer-label {
-        width: calc(50% - 80px);
+        width: 70%;
         font-size: 0.8em;
     }
     
     .footer-value {
-        width: 80px;
+        width: 30%;
     }
 }

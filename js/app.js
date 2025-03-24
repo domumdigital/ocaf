@@ -297,6 +297,7 @@ function performCalculation() {
     document.getElementById('expiring-section8-percentage').textContent = (expiringSect8Percentage * 100).toFixed(2) + '%';
     document.getElementById('section8-portion-debt').textContent = formatCurrency(sect8PortionOfDebtService);
     document.getElementById('ocaf-adjusted-section8-debt').textContent = formatCurrency(annualExpiringSect8MinusDebtService);
+    document.getElementById('ocaf-adjustment').textContent = ocafFactor.toFixed(3);
     document.getElementById('section8-rent-operations').textContent = formatCurrency(sect8RentPotentialOperations);
     document.getElementById('adjusted-contract-rent').textContent = formatCurrency(adjustedContractRentPotential);
     document.getElementById('lesser-of-p-or-comparable').textContent = formatCurrency(lesserOfPOrComparableRent);
