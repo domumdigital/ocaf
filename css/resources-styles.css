@@ -1,0 +1,77 @@
+/* Resources Page Styling */
+.resources-intro {
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+.resource-section {
+    margin-bottom: 40px;
+}
+
+.resource-section h2 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+/* Resource Cards */
+.resource-card {
+    background-color: #f8f9fa;
+    border-radius: 6px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.resource-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.resource-card h3 {
+    color: #3498db;
+    margin-bottom: 10px;
+}
+
+.resource-card p {
+    margin-bottom: 15px;
+    color: #555;
+}
+
+.resource-btn {
+    display: inline-block;
+    background-color: #3498db;
+    color: white;
+    text-decoration: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.resource-btn:hover {
+    background-color: #2980b9;
+}
+
+.resource-btn.external {
+    background-color: #2ecc71;
+}
+
+.resource-btn.external:hover {
+    background-color: #27ae60;
+}
+
+/* Responsive adjustments */
+@media (min-width: 768px) {
+    .resource-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+    
+    .resource-card {
+        margin-bottom: 0;
+    }
+}
