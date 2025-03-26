@@ -1,0 +1,111 @@
+/* Guide Page Styling */
+.guide-content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Breadcrumbs */
+.breadcrumbs {
+    margin-bottom: 20px;
+    color: #777;
+    font-size: 0.9em;
+}
+
+.breadcrumbs a {
+    color: #3498db;
+    text-decoration: none;
+}
+
+.breadcrumbs a:hover {
+    text-decoration: underline;
+}
+
+/* Main Navigation */
+.main-nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    list-style: none;
+    padding: 0;
+    margin: 15px 0;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.main-nav li {
+    margin: 0 15px;
+}
+
+.main-nav a {
+    color: #333;
+    text-decoration: none;
+    padding: 5px 0;
+}
+
+.main-nav a:hover, .main-nav a.active {
+    color: #3498db;
+    border-bottom: 2px solid #3498db;
+}
+
+/* Guide Sections */
+.guide-intro {
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+.guide-steps {
+    margin-bottom: 40px;
+}
+
+.step {
+    margin-bottom: 30px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid #eee;
+}
+
+.step h3 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+}
+
+.step ul {
+    margin-left: 25px;
+    line-height: 1.6;
+}
+
+.step-image {
+    max-width: 100%;
+    margin: 20px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.tip-box {
+    background-color: #f8f9fa;
+    border-left: 4px solid #3498db;
+    padding: 15px;
+    margin: 20px 0;
+    border-radius: 0 4px 4px 0;
+}
+
+.guide-tips ul {
+    line-height: 1.6;
+    margin-left: 25px;
+}
+
+.guide-tips li {
+    margin-bottom: 10px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .main-nav ul {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .main-nav li {
+        margin: 5px 0;
+    }
+}
