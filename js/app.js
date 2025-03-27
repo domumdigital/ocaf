@@ -143,7 +143,16 @@ function setupNumberInput(input) {
 
 // Load OCAF factors from JSON file
 function loadOcafFactors() {
-    fetch('data/ocaf-factors.json')
+    // Create an AbortController to manage the fetch request
+    const controller = new AbortController();
+    const signal = controller.signal;
+    
+    // Set up navigation detection
+    const handleNavigation = () => controller.abort();
+    window.addEventListener('beforeunload', handleNavigation);
+    window.addEventListener('unload', handleNavigation);
+    
+    fetch('data/ocaf-factors.json', { signal })
         .then(response => {
             if (!response.ok) {
                 throw new Error('Failed to load OCAF factors');
@@ -151,15 +160,22 @@ function loadOcafFactors() {
             return response.json();
         })
         .then(data => {
+            // Clean up event listeners
+            window.removeEventListener('beforeunload', handleNavigation);
+            window.removeEventListener('unload', handleNavigation);
+            
             // Access the nested state factors inside the "2025factors" object
             ocafFactors = data["2025factors"];
             populateStateDropdown();
         })
         .catch(error => {
-            console.error('Error loading OCAF factors:', error);
+            // Clean up event listeners
+            window.removeEventListener('beforeunload', handleNavigation);
+            window.removeEventListener('unload', handleNavigation);
             
-            // Only show the alert if the document is still active (not navigating away)
-            if (document.visibilityState !== 'hidden' && !window.isPageUnloading) {
+            // Only show the alert if this wasn't caused by a navigation abort
+            if (error.name !== 'AbortError') {
+                console.error('Error loading OCAF factors:', error);
                 alert('Error loading OCAF factors. Please try refreshing the page.');
             }
         });
