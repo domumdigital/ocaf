@@ -29,8 +29,13 @@ const selectedOcafFactor = document.getElementById('selected-ocaf-factor');
 const adjustedRentsTable = document.getElementById('adjusted-rents-table');
 const annualAdjustedRentPotential = document.getElementById('annual-adjusted-rent-potential');
 
-// Initialize the application when the DOM is fully loaded
-document.addEventListener('DOMContentLoaded', initialize);
+// Initialize the application when the DOM is fully loaded, but only if we're on the calculator page
+document.addEventListener('DOMContentLoaded', function() {
+    // Only initialize if the calculator elements exist on this page
+    if (document.getElementById('unit-matrix') && document.getElementById('calculate-btn')) {
+        initialize();
+    }
+});
 
 // Format number with commas (no dollar sign)
 function formatNumber(number) {
