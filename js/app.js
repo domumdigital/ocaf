@@ -2,6 +2,14 @@
 let ocafFactors = {}; // Will store our OCAF factors
 let customRowCount = 0; // Counter for custom added rows
 
+// Flag to track when the page is unloading
+window.isPageUnloading = false;
+
+// Set the flag when the page begins to unload
+window.addEventListener('beforeunload', function() {
+    window.isPageUnloading = true;
+});
+
 // DOM elements
 const stateSelect = document.getElementById('state-select');
 const currentDebtService = document.getElementById('current-debt-service');
