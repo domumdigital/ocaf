@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="js/config.js"></script>
+  
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Understanding HUD OCAF Calculations | Rent Adjustment Factors | ocafcalculator.com</title>
@@ -22,10 +24,18 @@
 </head>
 <body>
     <header>
-        <a href="https://ocaf-calc-v1.glitch.me">
+        <!-- Notice the empty href that will be filled by JavaScript -->
+        <a id="main-site-link">
             <h1>OCAF Worksheet Calculator</h1>
         </a>
-        <p>Calculate Operating Cost Adjustment Factors (OCAF) for HUD rent adjustments</p>
+        <p>Calculate Operating Cost Adjustment Factors (OCAF) for HUD Section 8 Rent Adjustments.</p>
+    
+    <script>
+        // Set the URL when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('main-site-link').href = CONFIG.MAIN_URL;
+        });
+    </script>
         <nav class="main-nav">
             <ul>
                 <li><a href="index.html">OCAF Calculator</a></li>
