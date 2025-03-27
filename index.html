@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="js/config.js"></script>
+  
     <meta charset="UTF-8">
     <link rel="stylesheet" href="css/styles.css">
     
@@ -27,12 +29,20 @@
     <link rel="stylesheet" href="css/seo-styles.css">
 </head>
 <body>
-    <header>
-        <a href="https://ocaf-calc.glitch.me">
+     <header>
+        <!-- Notice the empty href that will be filled by JavaScript -->
+        <a id="main-site-link">
             <h1>OCAF Worksheet Calculator</h1>
         </a>
         <p>Calculate Operating Cost Adjustment Factors (OCAF) for HUD Section 8 Rent Adjustments.</p>
     </header>
+    
+    <script>
+        // Set the URL when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('main-site-link').href = CONFIG.MAIN_URL;
+        });
+    </script>
 
     <main>
         <section id="input-section">
