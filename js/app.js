@@ -10,24 +10,24 @@ window.addEventListener('beforeunload', function() {
     window.isPageUnloading = true;
 });
 
-// DOM elements
-const stateSelect = document.getElementById('state-select');
-const currentDebtService = document.getElementById('current-debt-service');
-const nonExpiringRentPotential = document.getElementById('non-expiring-rent-potential');
-const nonSection8RentPotential = document.getElementById('non-section8-rent-potential');
-const unitMatrix = document.getElementById('unit-matrix');
-const addRowBtn = document.getElementById('add-row-btn');
-const calculateBtn = document.getElementById('calculate-btn');
-const resetBtn = document.getElementById('reset-btn');
-const resultsSection = document.getElementById('results-section');
-const totalRentPotential = document.getElementById('total-rent-potential');
-const annualRentPotential = document.getElementById('annual-rent-potential');
-const exportPdfBtn = document.getElementById('export-pdf');
-const exportExcelBtn = document.getElementById('export-excel');
-const selectedOcafDisplay = document.getElementById('selected-ocaf-display');
-const selectedOcafFactor = document.getElementById('selected-ocaf-factor');
-const adjustedRentsTable = document.getElementById('adjusted-rents-table');
-const annualAdjustedRentPotential = document.getElementById('annual-adjusted-rent-potential');
+// DOM elements - using null checks to prevent errors on non-calculator pages
+const stateSelect = document.getElementById('state-select') || null;
+const currentDebtService = document.getElementById('current-debt-service') || null;
+const nonExpiringRentPotential = document.getElementById('non-expiring-rent-potential') || null;
+const nonSection8RentPotential = document.getElementById('non-section8-rent-potential') || null;
+const unitMatrix = document.getElementById('unit-matrix') || null;
+const addRowBtn = document.getElementById('add-row-btn') || null;
+const calculateBtn = document.getElementById('calculate-btn') || null;
+const resetBtn = document.getElementById('reset-btn') || null;
+const resultsSection = document.getElementById('results-section') || null;
+const totalRentPotential = document.getElementById('total-rent-potential') || null;
+const annualRentPotential = document.getElementById('annual-rent-potential') || null;
+const exportPdfBtn = document.getElementById('export-pdf') || null;
+const exportExcelBtn = document.getElementById('export-excel') || null;
+const selectedOcafDisplay = document.getElementById('selected-ocaf-display') || null;
+const selectedOcafFactor = document.getElementById('selected-ocaf-factor') || null;
+const adjustedRentsTable = document.getElementById('adjusted-rents-table') || null;
+const annualAdjustedRentPotential = document.getElementById('annual-adjusted-rent-potential') || null;
 
 // Initialize the application when the DOM is fully loaded, but only if we're on the calculator page
 document.addEventListener('DOMContentLoaded', function() {
