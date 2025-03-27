@@ -382,3 +382,8 @@ footer {
         width: 30%;
     }
 }
+
+header a {
+    text-decoration: none;
+    color: inherit;
+}

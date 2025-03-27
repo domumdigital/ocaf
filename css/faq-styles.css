@@ -76,3 +76,8 @@
 .faq-answer li {
     margin-bottom: 5px;
 }
+
+header a {
+    text-decoration: none;
+    color: inherit;
+}
