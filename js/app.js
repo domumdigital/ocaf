@@ -2,27 +2,40 @@
 let ocafFactors = {}; // Will store our OCAF factors
 let customRowCount = 0; // Counter for custom added rows
 
-// DOM elements
-const stateSelect = document.getElementById('state-select');
-const currentDebtService = document.getElementById('current-debt-service');
-const nonExpiringRentPotential = document.getElementById('non-expiring-rent-potential');
-const nonSection8RentPotential = document.getElementById('non-section8-rent-potential');
-const unitMatrix = document.getElementById('unit-matrix');
-const addRowBtn = document.getElementById('add-row-btn');
-const calculateBtn = document.getElementById('calculate-btn');
-const resetBtn = document.getElementById('reset-btn');
-const resultsSection = document.getElementById('results-section');
-const totalRentPotential = document.getElementById('total-rent-potential');
-const annualRentPotential = document.getElementById('annual-rent-potential');
-const exportPdfBtn = document.getElementById('export-pdf');
-const exportExcelBtn = document.getElementById('export-excel');
-const selectedOcafDisplay = document.getElementById('selected-ocaf-display');
-const selectedOcafFactor = document.getElementById('selected-ocaf-factor');
-const adjustedRentsTable = document.getElementById('adjusted-rents-table');
-const annualAdjustedRentPotential = document.getElementById('annual-adjusted-rent-potential');
+// Flag to track when the page is unloading
+window.isPageUnloading = false;
 
-// Initialize the application when the DOM is fully loaded
-document.addEventListener('DOMContentLoaded', initialize);
+// Set the flag when the page begins to unload
+window.addEventListener('beforeunload', function() {
+    window.isPageUnloading = true;
+});
+
+// DOM elements - using null checks to prevent errors on non-calculator pages
+const stateSelect = document.getElementById('state-select') || null;
+const currentDebtService = document.getElementById('current-debt-service') || null;
+const nonExpiringRentPotential = document.getElementById('non-expiring-rent-potential') || null;
+const nonSection8RentPotential = document.getElementById('non-section8-rent-potential') || null;
+const unitMatrix = document.getElementById('unit-matrix') || null;
+const addRowBtn = document.getElementById('add-row-btn') || null;
+const calculateBtn = document.getElementById('calculate-btn') || null;
+const resetBtn = document.getElementById('reset-btn') || null;
+const resultsSection = document.getElementById('results-section') || null;
+const totalRentPotential = document.getElementById('total-rent-potential') || null;
+const annualRentPotential = document.getElementById('annual-rent-potential') || null;
+const exportPdfBtn = document.getElementById('export-pdf') || null;
+const exportExcelBtn = document.getElementById('export-excel') || null;
+const selectedOcafDisplay = document.getElementById('selected-ocaf-display') || null;
+const selectedOcafFactor = document.getElementById('selected-ocaf-factor') || null;
+const adjustedRentsTable = document.getElementById('adjusted-rents-table') || null;
+const annualAdjustedRentPotential = document.getElementById('annual-adjusted-rent-potential') || null;
+
+// Initialize the application when the DOM is fully loaded, but only if we're on the calculator page
+document.addEventListener('DOMContentLoaded', function() {
+    // Only initialize if the calculator elements exist on this page
+    if (document.getElementById('unit-matrix') && document.getElementById('calculate-btn')) {
+        initialize();
+    }
+});
 
 // Format number with commas (no dollar sign)
 function formatNumber(number) {
@@ -75,6 +88,22 @@ function initialize() {
     
     // Initial calculation update
     updateUnitMatrixCalculations();
+
+    // Add a cleanup handler for page navigation
+window.addEventListener('beforeunload', function() {
+    // Remove all event listeners that might trigger errors during navigation
+    const tbody = unitMatrix?.querySelector('tbody');
+    if (tbody) {
+        tbody.removeEventListener('input', updateUnitMatrixCalculations);
+    }
+    
+    if (addRowBtn) addRowBtn.removeEventListener('click', addUnitMatrixRow);
+    if (calculateBtn) calculateBtn.removeEventListener('click', performCalculation);
+    if (resetBtn) resetBtn.removeEventListener('click', resetForm);
+    if (exportPdfBtn) exportPdfBtn.removeEventListener('click', exportAsPdf);
+    if (exportExcelBtn) exportExcelBtn.removeEventListener('click', exportAsExcel);
+    if (stateSelect) stateSelect.removeEventListener('change', updateSelectedOcafFactor);
+});
 }
 
 // Setup number formatting for all relevant inputs
@@ -135,7 +164,28 @@ function setupNumberInput(input) {
 
 // Load OCAF factors from JSON file
 function loadOcafFactors() {
-    fetch('data/ocaf-factors.json')
+    // Create an AbortController to manage the fetch request
+    const controller = new AbortController();
+    const signal = controller.signal;
+    
+    // Flag to track if the page is being unloaded
+    let isUnloading = false;
+    
+    // Handler for navigation events
+    const handleNavigation = () => {
+        isUnloading = true;
+        controller.abort();
+    };
+    
+    // Listen for navigation events
+    window.addEventListener('beforeunload', handleNavigation);
+    
+    // Use absolute path for fetch to ensure it works from any page
+    const fetchPath = window.location.pathname.includes('/ocaf/') 
+        ? '/ocaf/data/ocaf-factors.json' 
+        : '/data/ocaf-factors.json';
+    
+    fetch(fetchPath, { signal })
         .then(response => {
             if (!response.ok) {
                 throw new Error('Failed to load OCAF factors');
@@ -143,16 +193,30 @@ function loadOcafFactors() {
             return response.json();
         })
         .then(data => {
+            // Clean up event listeners
+            window.removeEventListener('beforeunload', handleNavigation);
+            
             // Access the nested state factors inside the "2025factors" object
             ocafFactors = data["2025factors"];
             populateStateDropdown();
         })
         .catch(error => {
-            console.error('Error loading OCAF factors:', error);
-            alert('Error loading OCAF factors. Please try refreshing the page.');
+            // Clean up event listeners
+            window.removeEventListener('beforeunload', handleNavigation);
+            
+            // Only show alert if:
+            // 1. It's not an AbortError (which happens during navigation)
+            // 2. The page isn't being unloaded
+            // 3. The document is still visible
+            if (!isUnloading && 
+                error.name !== 'AbortError' && 
+                document.visibilityState !== 'hidden') {
+                
+                console.error('Error loading OCAF factors:', error);
+                alert('Error loading OCAF factors. Please try refreshing the page.');
+            }
         });
 }
-
 // Populate state dropdown with options from the OCAF factors
 function populateStateDropdown() {
     // Get states and sort by full name
