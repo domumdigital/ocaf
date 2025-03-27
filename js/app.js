@@ -88,6 +88,22 @@ function initialize() {
     
     // Initial calculation update
     updateUnitMatrixCalculations();
+
+    // Add a cleanup handler for page navigation
+window.addEventListener('beforeunload', function() {
+    // Remove all event listeners that might trigger errors during navigation
+    const tbody = unitMatrix?.querySelector('tbody');
+    if (tbody) {
+        tbody.removeEventListener('input', updateUnitMatrixCalculations);
+    }
+    
+    if (addRowBtn) addRowBtn.removeEventListener('click', addUnitMatrixRow);
+    if (calculateBtn) calculateBtn.removeEventListener('click', performCalculation);
+    if (resetBtn) resetBtn.removeEventListener('click', resetForm);
+    if (exportPdfBtn) exportPdfBtn.removeEventListener('click', exportAsPdf);
+    if (exportExcelBtn) exportExcelBtn.removeEventListener('click', exportAsExcel);
+    if (stateSelect) stateSelect.removeEventListener('change', updateSelectedOcafFactor);
+});
 }
 
 // Setup number formatting for all relevant inputs
@@ -152,12 +168,24 @@ function loadOcafFactors() {
     const controller = new AbortController();
     const signal = controller.signal;
     
-    // Set up navigation detection
-    const handleNavigation = () => controller.abort();
-    window.addEventListener('beforeunload', handleNavigation);
-    window.addEventListener('unload', handleNavigation);
+    // Flag to track if the page is being unloaded
+    let isUnloading = false;
     
-    fetch('data/ocaf-factors.json', { signal })
+    // Handler for navigation events
+    const handleNavigation = () => {
+        isUnloading = true;
+        controller.abort();
+    };
+    
+    // Listen for navigation events
+    window.addEventListener('beforeunload', handleNavigation);
+    
+    // Use absolute path for fetch to ensure it works from any page
+    const fetchPath = window.location.pathname.includes('/ocaf/') 
+        ? '/ocaf/data/ocaf-factors.json' 
+        : '/data/ocaf-factors.json';
+    
+    fetch(fetchPath, { signal })
         .then(response => {
             if (!response.ok) {
                 throw new Error('Failed to load OCAF factors');
@@ -167,7 +195,6 @@ function loadOcafFactors() {
         .then(data => {
             // Clean up event listeners
             window.removeEventListener('beforeunload', handleNavigation);
-            window.removeEventListener('unload', handleNavigation);
             
             // Access the nested state factors inside the "2025factors" object
             ocafFactors = data["2025factors"];
@@ -176,16 +203,20 @@ function loadOcafFactors() {
         .catch(error => {
             // Clean up event listeners
             window.removeEventListener('beforeunload', handleNavigation);
-            window.removeEventListener('unload', handleNavigation);
             
-            // Only show the alert if this wasn't caused by a navigation abort
-            if (error.name !== 'AbortError') {
+            // Only show alert if:
+            // 1. It's not an AbortError (which happens during navigation)
+            // 2. The page isn't being unloaded
+            // 3. The document is still visible
+            if (!isUnloading && 
+                error.name !== 'AbortError' && 
+                document.visibilityState !== 'hidden') {
+                
                 console.error('Error loading OCAF factors:', error);
                 alert('Error loading OCAF factors. Please try refreshing the page.');
             }
         });
 }
-
 // Populate state dropdown with options from the OCAF factors
 function populateStateDropdown() {
     // Get states and sort by full name
