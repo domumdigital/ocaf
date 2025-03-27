@@ -149,7 +149,11 @@ function loadOcafFactors() {
         })
         .catch(error => {
             console.error('Error loading OCAF factors:', error);
-            alert('Error loading OCAF factors. Please try refreshing the page.');
+            
+            // Only show the alert if the document is still active (not navigating away)
+            if (document.visibilityState !== 'hidden' && !window.isPageUnloading) {
+                alert('Error loading OCAF factors. Please try refreshing the page.');
+            }
         });
 }
 
