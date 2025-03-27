@@ -109,3 +109,8 @@
         margin: 5px 0;
     }
 }
+
+header a {
+    text-decoration: none;
+    color: inherit;
+}
